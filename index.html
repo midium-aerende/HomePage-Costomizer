@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customizer 3D - Services</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Réinitialisation de la mise en page */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Corps de la page */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: #E0E0E0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh; /* Permet de faire défiler la page */
+            overflow: auto; /* Permet le scroll */
+        }
+
+        /* Header */
+        header {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            color: #E0E0E0;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        header h1 {
+            color: #32FFC7; /* Accent Color */
+            font-size: 2rem;
+        }
+        
+        /* Bouton Hamburger avec trois barres */
+.hamburger-menu {
+    display: none;
+    background: transparent;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+    position: relative;
+    z-index: 20; /* S'assurer que le bouton est au-dessus des éléments */
+}
+
+.hamburger-menu:hover .bar{
+    transform: scale(1.2);
+}
+
+/* Les barres du hamburger */
+.bar {
+    display: block;
+    width: 30px;
+    height: 4px;
+    background-color: #32FFC7;
+    margin: 6px auto;
+    border-radius: 5px; /* Pour des bords arrondis sur les barres */
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+/* Changer les barres au clic (animation de transformation) */
+.hamburger-menu.active .bar1 {
+    transform: rotate(45deg) translate(5px, 5px); /* Première barre */
+}
+
+.hamburger-menu.active .bar2 {
+    opacity: 0; /* Masquer la barre du milieu */
+}
+
+.hamburger-menu.active .bar3 {
+    transform: rotate(-45deg) translate(5px, -5px); /* Troisième barre */
+}
+
+/* Menu de Navigation */
+.nav-menu {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-menu li {
+    margin-right: 20px;
+}
+
+.nav-menu a {
+    color: #E0E0E0;
+    text-decoration: none;
+    font-size: 1.5rem;
+}
+
+.nav-menu a:hover {
+    color: #32FFC7;
+}
+
+/* Menu mobile caché par défaut */
+.nav-menu.mobile {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background-color: #121212;
+    padding: 20px;
+    text-align: center;
+}
+
+.nav-menu.mobile.active {
+    display: block;
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: block; /* Affiche le bouton hamburger en mobile */
+    }
+
+    .nav-menu {
+        display: none;
+    }
+}
+
+
+        /* Section des Services */
+        .services-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: center;
+            padding: 4rem 1rem;
+            gap: 2rem;
+            z-index: 20;
+        }
+
+        .service-card {
+            background: #1C1C1C80;
+            border: 1px solid #32FFC7;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 300px;
+            padding: 2rem;
+            text-align: center;
+            color: #E0E0E0;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .service-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #32FFC7;
+        }
+
+        .service-card p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: #B0BEC5;
+        }
+
+        .service-btn {
+            background: linear-gradient(135deg, #32FFC7, #6439EA);
+            color: white;
+            font-size: 1rem;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .service-btn:hover {
+            transform: scale(1.1) translateY(-5px);
+        }
+
+        /* Scène 3D */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1; /* Scène en arrière-plan */
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .services-section {
+                flex-direction: column;
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>Customizer 3D</h1>
+        
+        <!-- Bouton Hamburger -->
+<button class="hamburger-menu" id="hamburger-button">
+    <span class="bar bar1"></span>
+    <span class="bar bar2"></span>
+    <span class="bar bar3"></span>
+</button>
+
+<!-- Menu de Navigation -->
+<ul class="nav-menu" id="nav-menu">
+    <li><a href="#">Accueil</a></li>
+    <li><a href="#">Services</a></li>
+    <li><a href="#">Contact</a></li>
+</ul>
+
+    </header>
+
+    <!-- Section des Services -->
+    <section class="services-section">
+        <!-- Service 1 -->
+        <div class="service-card">
+            <h3>Personnalisation de Bijoux</h3>
+            <p>Créez des bijoux uniques avec des designs 3D avancés. Visualisez en temps réel et personnalisez les détails selon vos préférences.</p>
+            <button class="service-btn">Explorer</button>
+        </div>
+
+        <!-- Service 2 -->
+        <div class="service-card">
+            <h3>Meubles Design 3D</h3>
+            <p>Transformez vos idées en meubles 3D. Personnalisez les formes, les textures, et le style dans un environnement interactif.</p>
+            <button class="service-btn">Commencer</button>
+        </div>
+
+        <!-- Service 3 -->
+        <div class="service-card">
+            <h3>Visualisation Augmentée</h3>
+            <p>Utilisez la réalité augmentée pour visualiser vos créations dans votre environnement réel avant de les produire.</p>
+            <button class="service-btn">Essayer</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: #3332; color: #B0BEC5; text-align: center; padding: 1rem;">
+        <p>&copy; 2024 Customizer 3D. Tous droits réservés.</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Configuration de la scène 3D
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Lumières dynamiques
+        const light1 = new THREE.PointLight(0x32FFC7, 1.5, 100);
+        const light2 = new THREE.PointLight(0x6439EA, 1.5, 100);
+        const light3 = new THREE.PointLight(0xFF5733, 1.5, 100);
+        light1.position.set(5, 5, 5);
+        light2.position.set(-5, -5, 5);
+        light3.position.set(0, 5, -5);
+        scene.add(light1, light2, light3);
+
+        // Matériaux et géométries
+        const materialWireframe = new THREE.MeshBasicMaterial({ color: 0x32FFC7, wireframe: true });
+        const materialGlass = new THREE.MeshPhysicalMaterial({
+            color: 0x32FFC7,
+            transmission: 0.9,
+            reflectivity: 0.5,
+            roughness: 0.1,
+            metalness: 0.1,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.05
+        });
+
+        // Fonction pour créer une forme géométrique différente pour chaque objet
+        function createShape(index) {
+            let geometry;
+
+            switch (index % 4) {
+                case 0:
+                    geometry = new THREE.SphereGeometry(1.2, 16, 16); // Sphère plus grande
+                    break;
+                case 1:
+                    geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5); // Cube plus grand
+                    break;
+                case 2:
+                    geometry = new THREE.CylinderGeometry(0.8, 0.8, 2.5, 32); // Cylindre plus grand
+                    break;
+                case 3:
+                    geometry = new THREE.ConeGeometry(1, 2.5, 32); // Cône plus grand
+                    break;
+            }
+
+            const material = index % 2 === 0 ? materialWireframe : materialGlass;
+            return new THREE.Mesh(geometry, material);
+        }
+
+        // Création des objets 3D avec différentes géométries
+        const objects = [];
+        const numObjects = 6; // Nombre d'objets
+        const lemniscateRadius = 5; // Rayon de la lemniscate
+
+        for (let i = 0; i < numObjects; i++) {
+            const mesh = createShape(i);
+
+            // Position initiale pour chaque objet
+            const angle = (i / numObjects) * Math.PI * 1; // Espacement uniforme
+            mesh.position.x = Math.cos(angle) * lemniscateRadius;
+            mesh.position.y = Math.sin(angle) * lemniscateRadius;
+
+            scene.add(mesh);
+            objects.push({ mesh, angle });
+        }
+
+        // Paramètres pour l'animation
+        const lemniscateSpeed = 0.1;  // Vitesse de déplacement en 8
+        const globalRotationSpeed = 0.01; // Vitesse de rotation visible de la lemniscate
+        const selfRotationSpeed = 0.01; // Vitesse de rotation propre des objets
+        const scaleSpeed = 0.1;        // Vitesse de changement de taille
+
+        // Fonction d'animation
+        function animate() {
+            const time = Date.now() * 0.0001;
+
+            objects.forEach((obj, index) => {
+                const { mesh, angle } = obj;
+
+                // Mouvement en lemniscate (forme de 8) autour du centre
+                const t = time + index * 1.0; // Décalage temporel entre objets
+                const x = lemniscateRadius * Math.sin(t) * Math.cos(t); // Mouvement horizontal
+                const y = lemniscateRadius * Math.sin(t);              // Mouvement vertical
+                mesh.position.x = x;
+                mesh.position.y = y;
+
+                // Rotation propre de chaque objet
+                mesh.rotation.x += selfRotationSpeed;
+                mesh.rotation.y += selfRotationSpeed;
+
+                // Animation de la taille (zoom avant/arrière)
+                const scaleFactor = 1 + Math.sin(time * scaleSpeed + index) * 0.5; // Variation plus marquée
+                mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
+
+                // Rotation globale visible de la lemniscate
+                const globalAngle = time * globalRotationSpeed;
+                const newX = mesh.position.x * Math.cos(globalAngle) - mesh.position.y * Math.sin(globalAngle);
+                const newY = mesh.position.x * Math.sin(globalAngle) + mesh.position.y * Math.cos(globalAngle);
+                mesh.position.x = newX;
+                mesh.position.y = newY;
+            });
+
+            // Rendu de la scène
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+
+        // Initialisation de la caméra
+        camera.position.z = 10;
+        animate();
+
+        // Redimensionner la scène 3D en fonction de la taille de la fenêtre
+        window.addEventListener('resize', function () {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+
+    </script>
+
+</body>
+</html>
